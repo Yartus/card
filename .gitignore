@@ -95,6 +95,3 @@ sw.*
 venv/
 __pycache__/
 *.pyc
-
-# GitHub workflows (requires workflow scope token)
-.github/workflows/
