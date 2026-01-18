@@ -1,0 +1,246 @@
+/**
+ * WeCard 名片模块统一样式规范
+ * 确保所有模块的容器、间距、圆角保持一致，营造"呼吸感"
+ */
+
+/* ========================================
+   全局CSS变量 - 统一间距和尺寸
+   ======================================== */
+
+:root {
+  /* 容器边距 - 模块距离屏幕边缘的距离 */
+  --card-module-margin-horizontal: 16px;  /* 左右边距，营造呼吸感 */
+  --card-module-margin-vertical: 12px;    /* 上下边距 */
+  
+  /* 容器内边距 - 模块内容距离边框的距离 */
+  --card-module-padding-horizontal: 20px; /* 左右内边距 */
+  --card-module-padding-vertical: 16px;   /* 上下内边距 */
+  
+  /* 圆角 */
+  --card-module-border-radius: 12px;      /* 模块圆角 */
+  --card-item-border-radius: 8px;         /* 内部卡片圆角 */
+  
+  /* 边框和阴影 */
+  --card-module-border: 1px solid rgba(0,0,0,.08);
+  --card-module-shadow: 0 2px 8px rgba(0,0,0,.04);
+  
+  /* 模块间距 */
+  --card-module-gap: 12px;                /* 模块之间的垂直间距 */
+  
+  /* 内容间距 */
+  --card-content-gap: 20px;               /* 模块内部区块间距 */
+  --card-section-gap: 16px;               /* 小节之间间距 */
+  --card-item-gap: 12px;                  /* 列表项间距 */
+}
+
+/* ========================================
+   统一模块容器样式（mixin）
+   所有名片模块都应该使用这个基础样式
+   ======================================== */
+
+@mixin card-module-container {
+  margin: var(--card-module-margin-vertical) var(--card-module-margin-horizontal);
+  padding: var(--card-module-padding-vertical) var(--card-module-padding-horizontal);
+  background: #ffffff;
+  border: var(--card-module-border);
+  border-radius: var(--card-module-border-radius);
+  box-shadow: var(--card-module-shadow);
+}
+
+@mixin card-module-container-no-padding {
+  margin: var(--card-module-margin-vertical) var(--card-module-margin-horizontal);
+  background: #ffffff;
+  border: var(--card-module-border);
+  border-radius: var(--card-module-border-radius);
+  box-shadow: var(--card-module-shadow);
+  overflow: hidden;
+}
+
+/* ========================================
+   标题样式统一
+   ======================================== */
+
+@mixin card-section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #262626;
+  margin: 0 0 4px 0;
+  line-height: 1.4;
+}
+
+@mixin card-section-subtitle {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin: 0;
+  line-height: 1.5;
+}
+
+@mixin card-subsection-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #595959;
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+/* ========================================
+   内部卡片/项目样式
+   ======================================== */
+
+@mixin card-item {
+  padding: 12px;
+  border: 1px solid #f0f0f0;
+  border-radius: var(--card-item-border-radius);
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: #d9d9d9;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    background: #ffffff;
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ========================================
+   响应式断点
+   ======================================== */
+
+$mobile-breakpoint: 480px;
+$tablet-breakpoint: 768px;
+$desktop-breakpoint: 1024px;
+
+/* 移动端优化 */
+@mixin card-module-mobile {
+  @media (max-width: $mobile-breakpoint) {
+    margin: var(--card-module-gap) var(--card-module-gap);
+    padding: var(--card-module-padding-vertical) calc(var(--card-module-padding-horizontal) - 4px);
+  }
+}
+
+/* ========================================
+   实际应用示例（所有模块都应该遵循）
+   ======================================== */
+
+/* 示例1：标准模块（有padding） */
+.example-module-with-padding {
+  @include card-module-container;
+  
+  /* 模块内容 */
+  .module-header {
+    @include card-section-title;
+  }
+  
+  .module-subtitle {
+    @include card-section-subtitle;
+  }
+  
+  /* 响应式 */
+  @include card-module-mobile;
+}
+
+/* 示例2：无padding模块（如图片轮播） */
+.example-module-no-padding {
+  @include card-module-container-no-padding;
+  
+  /* 内部内容有自己的padding */
+  .module-content {
+    padding: var(--card-module-padding-vertical) var(--card-module-padding-horizontal);
+  }
+  
+  /* 响应式 */
+  @include card-module-mobile;
+}
+
+/* ========================================
+   网格布局统一
+   ======================================== */
+
+@mixin card-grid($columns: 3, $gap: 12px) {
+  display: grid;
+  grid-template-columns: repeat($columns, 1fr);
+  gap: $gap;
+  
+  @media (max-width: $tablet-breakpoint) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: $mobile-breakpoint) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========================================
+   动画统一
+   ======================================== */
+
+@mixin card-fade-in {
+  animation: cardFadeIn 0.3s ease;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   使用说明
+   ======================================== */
+
+/**
+ * 如何在组件中使用：
+ * 
+ * 1. 导入这个文件：
+ *    @import '@/assets/styles/card-modules.scss';
+ * 
+ * 2. 使用mixin：
+ *    .your-module {
+ *      @include card-module-container;
+ *      @include card-module-mobile;
+ *    }
+ * 
+ * 3. 使用CSS变量：
+ *    .custom-element {
+ *      margin: var(--card-module-margin-vertical);
+ *      padding: var(--card-module-padding-horizontal);
+ *    }
+ * 
+ * 4. 确保所有新模块都遵循这个规范！
+ */
+
+/* ========================================
+   呼吸感原则
+   ======================================== */
+
+/**
+ * "呼吸感"的定义：
+ * 
+ * 1. 模块不要贴边 - 左右必须有16px边距
+ * 2. 模块之间有间隔 - 上下12px间距
+ * 3. 内容不要拥挤 - 内容距离边框20px
+ * 4. 圆角要统一 - 模块12px，内部卡片8px
+ * 5. 阴影要轻微 - 营造层次感，不抢眼
+ * 
+ * ❌ 反例：
+ * - 内容直接贴到屏幕边缘
+ * - 模块之间没有间隔
+ * - 圆角不一致
+ * - 阴影过重或没有
+ * 
+ * ✅ 正例：
+ * - 所有模块左右留16px空白
+ * - 模块之间统一12px间距
+ * - 所有模块12px圆角
+ * - 轻微阴影营造层次
+ */
+

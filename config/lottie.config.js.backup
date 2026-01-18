@@ -1,0 +1,270 @@
+/**
+ * Lottie动画配置文件
+ * 统一管理所有动画相关的配置
+ */
+
+export const LOTTIE_CONFIG = {
+  // 全局配置
+  global: {
+    renderer: 'svg', // 'svg' | 'canvas' | 'html'
+    autoplay: true,
+    loop: true,
+    speed: 1,
+    timeout: 10000, // 10秒超时
+    retryAttempts: 3,
+    retryDelay: 1000 // 1秒重试延迟
+  },
+  
+  // 性能配置
+  performance: {
+    enableCache: true,
+    cacheExpiry: 24 * 60 * 60 * 1000, // 24小时
+    maxCacheSize: 50, // 最大缓存动画数量
+    preloadCritical: true,
+    lazyLoad: true
+  },
+  
+  // 响应式配置
+  responsive: {
+    desktop: {
+      width: 24,
+      height: 24,
+      speed: 1
+    },
+    tablet: {
+      width: 20,
+      height: 20,
+      speed: 0.9
+    },
+    mobile: {
+      width: 16,
+      height: 16,
+      speed: 0.8
+    }
+  },
+  
+  // 可访问性配置
+  accessibility: {
+    respectReducedMotion: true,
+    fallbackIcons: {
+      'phone-ring': 'icon-phone-animated',
+      'phone-call': 'icon-phone',
+      'share-float': 'icon-share-animated',
+      'share-pulse': 'icon-share',
+      'loading-spinner': 'icon-loading',
+      'success-check': 'icon-check',
+      'error-cross': 'icon-error'
+    }
+  },
+  
+  // 数据源配置
+  sources: {
+    priority: ['local', 'ali', 'cdn'], // 加载优先级
+    local: {
+      baseUrl: '/assets/animations/',
+      enabled: true
+    },
+    ali: {
+      baseUrl: 'https://at.alicdn.com/t/lottie/',
+      enabled: true,
+      apiKey: '', // 如果需要API密钥
+      timeout: 8000
+    },
+    cdn: {
+      baseUrl: 'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-animations@1.0.0/',
+      enabled: true,
+      timeout: 6000
+    }
+  },
+  
+  // 动画库配置
+  animations: {
+    // 电话类动画
+    phone: {
+      'phone-ring': {
+        local: 'phone/ring.json',
+        ali: 'phone-ring-123456',
+        cdn: 'phone/ring.json',
+        config: {
+          loop: true,
+          autoplay: true,
+          speed: 1,
+          trigger: 'interval', // 'hover' | 'click' | 'interval' | 'auto'
+          interval: 3000 // 3秒间隔
+        }
+      },
+      'phone-call': {
+        local: 'phone/call.json',
+        ali: 'phone-call-789012',
+        cdn: 'phone/call.json',
+        config: {
+          loop: false,
+          autoplay: false,
+          speed: 1.2,
+          trigger: 'click'
+        }
+      },
+      'phone-vibrate': {
+        local: 'phone/vibrate.json',
+        ali: 'phone-vibrate-456789',
+        cdn: 'phone/vibrate.json',
+        config: {
+          loop: true,
+          autoplay: true,
+          speed: 2,
+          trigger: 'hover'
+        }
+      }
+    },
+    
+    // 分享类动画
+    share: {
+      'share-float': {
+        local: 'share/float.json',
+        ali: 'share-float-345678',
+        cdn: 'share/float.json',
+        config: {
+          loop: true,
+          autoplay: true,
+          speed: 0.8,
+          trigger: 'auto'
+        }
+      },
+      'share-pulse': {
+        local: 'share/pulse.json',
+        ali: 'share-pulse-901234',
+        cdn: 'share/pulse.json',
+        config: {
+          loop: true,
+          autoplay: false,
+          speed: 1.5,
+          trigger: 'hover'
+        }
+      },
+      'share-bounce': {
+        local: 'share/bounce.json',
+        ali: 'share-bounce-567890',
+        cdn: 'share/bounce.json',
+        config: {
+          loop: false,
+          autoplay: false,
+          speed: 1,
+          trigger: 'click'
+        }
+      }
+    },
+    
+    // 状态类动画
+    status: {
+      'loading-spinner': {
+        local: 'status/loading.json',
+        ali: 'loading-234567',
+        cdn: 'status/loading.json',
+        config: {
+          loop: true,
+          autoplay: true,
+          speed: 1,
+          trigger: 'auto'
+        }
+      },
+      'success-check': {
+        local: 'status/success.json',
+        ali: 'success-678901',
+        cdn: 'status/success.json',
+        config: {
+          loop: false,
+          autoplay: true,
+          speed: 1,
+          trigger: 'auto'
+        }
+      },
+      'error-cross': {
+        local: 'status/error.json',
+        ali: 'error-345678',
+        cdn: 'status/error.json',
+        config: {
+          loop: false,
+          autoplay: true,
+          speed: 1,
+          trigger: 'auto'
+        }
+      }
+    },
+    
+    // 交互类动画
+    interaction: {
+      'heart-beat': {
+        local: 'interaction/heart.json',
+        ali: 'heart-123456',
+        cdn: 'interaction/heart.json',
+        config: {
+          loop: true,
+          autoplay: false,
+          speed: 1,
+          trigger: 'click'
+        }
+      },
+      'star-twinkle': {
+        local: 'interaction/star.json',
+        ali: 'star-789012',
+        cdn: 'interaction/star.json',
+        config: {
+          loop: false,
+          autoplay: false,
+          speed: 1.2,
+          trigger: 'hover'
+        }
+      }
+    }
+  },
+  
+  // 主题配置
+  themes: {
+    light: {
+      colorReplacements: {
+        '#000000': '#333333',
+        '#ffffff': '#f5f5f5'
+      }
+    },
+    dark: {
+      colorReplacements: {
+        '#000000': '#ffffff',
+        '#333333': '#cccccc'
+      }
+    }
+  },
+  
+  // 调试配置
+  debug: {
+    enabled: process.env.NODE_ENV === 'development',
+    logLevel: 'warn', // 'error' | 'warn' | 'info' | 'debug'
+    showStats: false,
+    trackPerformance: true
+  }
+}
+
+// 获取动画配置的辅助函数
+export function getAnimationConfig(category, name) {
+  return LOTTIE_CONFIG.animations[category]?.[name] || null
+}
+
+// 获取响应式配置的辅助函数
+export function getResponsiveConfig(breakpoint = 'desktop') {
+  return LOTTIE_CONFIG.responsive[breakpoint] || LOTTIE_CONFIG.responsive.desktop
+}
+
+// 检查是否应该禁用动画
+export function shouldDisableAnimations() {
+  if (!LOTTIE_CONFIG.accessibility.respectReducedMotion) {
+    return false
+  }
+  
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+// 获取降级图标
+export function getFallbackIcon(animationName) {
+  return LOTTIE_CONFIG.accessibility.fallbackIcons[animationName] || 'icon-default'
+}
+
+export default LOTTIE_CONFIG

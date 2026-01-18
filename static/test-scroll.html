@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>滚动测试</title>
+<style>
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 400px;
+  height: 600px;
+  border: 3px solid red;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.header {
+  height: 60px;
+  background: lightblue;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 2px solid blue;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #f5f5f5;
+}
+
+.scroll-container {
+  min-height: 100%;
+  padding: 20px;
+}
+
+.viewport {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.content {
+  background: linear-gradient(to bottom, #fff, #eee);
+}
+
+.item {
+  padding: 20px;
+  margin: 10px 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.footer {
+  height: 50px;
+  background: lightgreen;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  border-top: 2px solid green;
+}
+
+.body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+</style>
+</head>
+<body>
+
+<h1>滚动测试 - 模拟PreviewPanel结构</h1>
+
+<div class="container">
+  <div class="header">
+    <strong>Header (固定)</strong>
+  </div>
+  
+  <div class="body">
+    <div class="scroll-container">
+      <div class="viewport">
+        <div class="content">
+          <h3>内容区域</h3>
+          <div class="item">模块 1</div>
+          <div class="item">模块 2</div>
+          <div class="item">模块 3</div>
+          <div class="item">模块 4</div>
+          <div class="item">模块 5</div>
+          <div class="item">模块 6</div>
+          <div class="item">模块 7</div>
+          <div class="item">模块 8</div>
+          <div class="item">模块 9</div>
+          <div class="item">模块 10</div>
+          <div class="item">模块 11</div>
+          <div class="item">模块 12</div>
+          <div class="item">模块 13</div>
+          <div class="item">模块 14</div>
+          <div class="item">模块 15</div>
+        </div>
+      </div>
+      <div style="text-align: center; color: #999; font-size: 12px;">
+        设备信息区域
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <strong>Footer (固定)</strong>
+  </div>
+</div>
+
+<p style="margin-top: 20px;">
+  如果能看到滚动条并且可以滚动，说明结构是正确的。<br>
+  访问: <code>http://你的域名/test-scroll.html</code>
+</p>
+
+</body>
+</html>
+

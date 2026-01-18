@@ -1,0 +1,56 @@
+/**
+ * 图标样式文件
+ * 定义项目中使用的图标样式
+ */
+
+// 基础图标样式
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+
+// 图标尺寸变体
+.icon-sm {
+  font-size: 0.875rem;
+}
+
+.icon-lg {
+  font-size: 1.25rem;
+}
+
+.icon-xl {
+  font-size: 1.5rem;
+}
+
+// 图标颜色变体
+.icon-primary {
+  color: #1890ff;
+}
+
+.icon-success {
+  color: #52c41a;
+}
+
+.icon-warning {
+  color: #faad14;
+}
+
+.icon-error {
+  color: #ff4d4f;
+}
+
+// 图标动画
+.icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

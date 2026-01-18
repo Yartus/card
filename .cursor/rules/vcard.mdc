@@ -1,0 +1,24 @@
+---
+alwaysApply: true
+project: wecard
+version: v1
+mode: strict
+
+原则:
+  - 不要盲目输出总结性文档，在经过验证后按照明确要求输出
+  - 后端使用 Flask + SQLAlchemy。
+  - 开发逻辑必须覆盖完整流程：扫码安装 → 租户生成 → 成员同步 → 名片推送。
+  - 对接企业微信、小程序、服务商接口时必须优先调用官方 SDK，避免重复造轮子。
+  - 所有数据库表都要包含 tenant_id / corp_id，保证多租户隔离。
+  - 支持基础域名模式；可选支持租户自定义域名。
+  - 功能权限控制：通过 check_plan 装饰器判断用户套餐（免费/付费/高级）。
+  - 文件上传走 S3 协议（MinIO、OSS、COS、S3），只保存元信息（URL、文件名、大小、类型）。
+  - 开发环境推荐本地裸跑 Flask，docker-compose 仅用于 MySQL/Redis/MinIO，最后再做容器化。
+  - 输出必须包含：Flask 骨架、SQLAlchemy 模型、路由 stub、README。
+
+交付物:
+  - app/ （Flask 项目骨架）
+  - .cursor/prompt.md
+  - .cursor/todolist.md
+  - README.md
+---

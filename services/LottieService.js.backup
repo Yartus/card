@@ -1,0 +1,309 @@
+/**
+ * Lottie动画资源管理服务
+ * 支持本地资源、阿里图标库、CDN等多种来源
+ */
+
+class LottieService {
+  constructor() {
+    this.cache = new Map()
+    this.config = {
+      // 本地资源路径
+      localPath: '/assets/animations/',
+      // 阿里图标库配置
+      aliIconFont: {
+        baseUrl: 'https://at.alicdn.com/t/lottie/',
+        suffix: '.json'
+      },
+      // CDN配置
+      cdn: {
+        baseUrl: 'https://cdn.jsdelivr.net/npm/@lottiefiles/lottie-animations@1.0.0/',
+        suffix: '.json'
+      },
+      // 缓存配置
+      cacheEnabled: true,
+      cacheExpiry: 24 * 60 * 60 * 1000, // 24小时
+      // 超时配置
+      timeout: 10000 // 10秒
+    }
+    
+    // 预定义的动画映射（与lottie.config.js保持一致）
+    this.animations = {
+      // 电话相关动画
+      'phone-ring': {
+        local: 'phone/ring.json',
+        ali: 'phone-ring-123456',
+        cdn: 'phone/ring.json'
+      },
+      'phone-call': {
+        local: 'phone/call.json',
+        ali: 'phone-call-789012',
+        cdn: 'phone/call.json'
+      },
+      'phone-vibrate': {
+        local: 'phone/vibrate.json',
+        ali: 'phone-vibrate-456789',
+        cdn: 'phone/vibrate.json'
+      },
+      
+      // 分享相关动画
+      'share-float': {
+        local: 'share/float.json',
+        ali: 'share-float-345678',
+        cdn: 'share/float.json'
+      },
+      'share-pulse': {
+        local: 'share/pulse.json',
+        ali: 'share-pulse-901234',
+        cdn: 'share/pulse.json'
+      },
+      'share-bounce': {
+        local: 'share/bounce.json',
+        ali: 'share-bounce-567890',
+        cdn: 'share/bounce.json'
+      },
+      
+      // 状态类动画
+      'loading-spinner': {
+        local: 'status/loading.json',
+        ali: 'loading-234567',
+        cdn: 'status/loading.json'
+      },
+      'success-check': {
+        local: 'status/success.json',
+        ali: 'success-678901',
+        cdn: 'status/success.json'
+      },
+      'error-cross': {
+        local: 'status/error.json',
+        ali: 'error-345678',
+        cdn: 'status/error.json'
+      },
+      
+      // 交互类动画
+      'heart-beat': {
+        local: 'interaction/heart.json',
+        ali: 'heart-123456',
+        cdn: 'interaction/heart.json'
+      },
+      'star-twinkle': {
+        local: 'interaction/star.json',
+        ali: 'star-789012',
+        cdn: 'interaction/star.json'
+      }
+    }
+  }
+  
+  /**
+   * 获取动画数据
+   * @param {string} name - 动画名称
+   * @param {string} source - 数据源 ('local', 'ali', 'cdn', 'auto')
+   * @returns {Promise<Object>} 动画JSON数据
+   */
+  async getAnimation(name, source = 'auto') {
+    const cacheKey = `${name}-${source}`
+    
+    // 检查缓存
+    if (this.config.cacheEnabled && this.cache.has(cacheKey)) {
+      const cached = this.cache.get(cacheKey)
+      if (Date.now() - cached.timestamp < this.config.cacheExpiry) {
+        return cached.data
+      }
+      this.cache.delete(cacheKey)
+    }
+    
+    try {
+      let animationData
+      
+      if (source === 'auto') {
+        // 自动选择最佳数据源
+        animationData = await this.loadWithFallback(name)
+      } else {
+        // 使用指定数据源
+        animationData = await this.loadFromSource(name, source)
+      }
+      
+      // 缓存结果
+      if (this.config.cacheEnabled && animationData) {
+        this.cache.set(cacheKey, {
+          data: animationData,
+          timestamp: Date.now()
+        })
+      }
+      
+      return animationData
+    } catch (error) {
+      console.warn(`Failed to load Lottie animation "${name}":`, error)
+      throw error
+    }
+  }
+  
+  /**
+   * 带降级的加载方式
+   * @param {string} name - 动画名称
+   * @returns {Promise<Object>} 动画数据
+   */
+  async loadWithFallback(name) {
+    const sources = ['local', 'ali', 'cdn']
+    
+    for (const source of sources) {
+      try {
+        const data = await this.loadFromSource(name, source)
+        if (data) {
+          console.log(`Loaded Lottie animation "${name}" from ${source}`)
+          return data
+        }
+      } catch (error) {
+        console.warn(`Failed to load from ${source}:`, error)
+        continue
+      }
+    }
+    
+    throw new Error(`All sources failed for animation "${name}"`)
+  }
+  
+  /**
+   * 从指定数据源加载
+   * @param {string} name - 动画名称
+   * @param {string} source - 数据源
+   * @returns {Promise<Object>} 动画数据
+   */
+  async loadFromSource(name, source) {
+    const animation = this.animations[name]
+    if (!animation || !animation[source]) {
+      throw new Error(`Animation "${name}" not found for source "${source}"`)
+    }
+    
+    let url
+    switch (source) {
+      case 'local':
+        url = this.config.localPath + animation.local
+        break
+      case 'ali':
+        url = this.config.aliIconFont.baseUrl + animation.ali + this.config.aliIconFont.suffix
+        break
+      case 'cdn':
+        url = this.config.cdn.baseUrl + animation.cdn + this.config.cdn.suffix
+        break
+      default:
+        throw new Error(`Unknown source: ${source}`)
+    }
+    
+    return this.fetchWithTimeout(url)
+  }
+  
+  /**
+   * 带超时的fetch请求
+   * @param {string} url - 请求URL
+   * @returns {Promise<Object>} JSON数据
+   */
+  async fetchWithTimeout(url) {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
+    
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'public, max-age=3600'
+        }
+      })
+      
+      clearTimeout(timeoutId)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+      
+      return await response.json()
+    } catch (error) {
+      clearTimeout(timeoutId)
+      throw error
+    }
+  }
+  
+  /**
+   * 预加载关键动画
+   * @param {Array<string>} names - 动画名称数组
+   * @returns {Promise<void>}
+   */
+  async preloadAnimations(names = []) {
+    const defaultAnimations = ['phone-ring', 'share-float']
+    const toLoad = names.length > 0 ? names : defaultAnimations
+    
+    const promises = toLoad.map(name => 
+      this.getAnimation(name).catch(error => 
+        console.warn(`Failed to preload animation "${name}":`, error)
+      )
+    )
+    
+    await Promise.allSettled(promises)
+    console.log(`Preloaded ${toLoad.length} Lottie animations`)
+  }
+  
+  /**
+   * 清理缓存
+   * @param {string} name - 可选，清理特定动画的缓存
+   */
+  clearCache(name = null) {
+    if (name) {
+      // 清理特定动画的所有缓存
+      for (const key of this.cache.keys()) {
+        if (key.startsWith(name + '-')) {
+          this.cache.delete(key)
+        }
+      }
+    } else {
+      // 清理所有缓存
+      this.cache.clear()
+    }
+  }
+  
+  /**
+   * 获取缓存统计信息
+   * @returns {Object} 缓存统计
+   */
+  getCacheStats() {
+    return {
+      size: this.cache.size,
+      keys: Array.from(this.cache.keys()),
+      memoryUsage: this.estimateMemoryUsage()
+    }
+  }
+  
+  /**
+   * 估算内存使用量
+   * @returns {number} 估算的字节数
+   */
+  estimateMemoryUsage() {
+    let totalSize = 0
+    for (const [key, value] of this.cache.entries()) {
+      totalSize += key.length * 2 // 字符串大小
+      totalSize += JSON.stringify(value.data).length * 2 // JSON数据大小
+      totalSize += 8 // 时间戳大小
+    }
+    return totalSize
+  }
+  
+  /**
+   * 添加自定义动画配置
+   * @param {string} name - 动画名称
+   * @param {Object} config - 动画配置
+   */
+  addAnimation(name, config) {
+    this.animations[name] = config
+  }
+  
+  /**
+   * 更新配置
+   * @param {Object} newConfig - 新配置
+   */
+  updateConfig(newConfig) {
+    this.config = { ...this.config, ...newConfig }
+  }
+}
+
+// 创建单例实例
+const lottieService = new LottieService()
+
+export default lottieService

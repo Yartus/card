@@ -1,0 +1,292 @@
+<template>
+  <div 
+    ref="lottieContainer" 
+    class="lottie-icon"
+    :style="containerStyle"
+    @click="handleClick"
+  ></div>
+</template>
+
+<script>
+import lottie from 'lottie-web'
+
+export default {
+  name: 'LottieIcon',
+  
+  props: {
+    // 动画数据（JSON对象或URL）
+    animationData: { 
+      type: [Object, String], 
+      default: null 
+    },
+    // 动画配置
+    autoplay: { 
+      type: Boolean, 
+      default: true 
+    },
+    loop: { 
+      type: Boolean, 
+      default: true 
+    },
+    // 尺寸
+    width: { 
+      type: [Number, String], 
+      default: 24 
+    },
+    height: { 
+      type: [Number, String], 
+      default: 24 
+    },
+    // 渲染器类型
+    renderer: {
+      type: String,
+      default: 'svg',
+      validator: value => ['svg', 'canvas', 'html'].includes(value)
+    },
+    // 播放速度
+    speed: {
+      type: Number,
+      default: 1
+    },
+    // 是否可点击
+    clickable: {
+      type: Boolean,
+      default: false
+    },
+    // 降级图标（当Lottie加载失败时使用）
+    fallbackIcon: {
+      type: String,
+      default: ''
+    }
+  },
+  
+  data() {
+    return {
+      animation: null,
+      isLoaded: false,
+      hasError: false
+    }
+  },
+  
+  computed: {
+    containerStyle() {
+      return {
+        width: typeof this.width === 'number' ? `${this.width}px` : this.width,
+        height: typeof this.height === 'number' ? `${this.height}px` : this.height,
+        cursor: this.clickable ? 'pointer' : 'default'
+      }
+    }
+  },
+  
+  mounted() {
+    this.initLottie()
+  },
+  
+  beforeUnmount() {
+    this.destroyAnimation()
+  },
+  
+  watch: {
+    animationData: {
+      handler() {
+        this.destroyAnimation()
+        this.initLottie()
+      },
+      deep: true
+    },
+    
+    speed(newSpeed) {
+      if (this.animation) {
+        this.animation.setSpeed(newSpeed)
+      }
+    }
+  },
+  
+  methods: {
+    async initLottie() {
+      if (!this.animationData) {
+        this.showFallback()
+        return
+      }
+      
+      try {
+        let animData = this.animationData
+        
+        // 如果是URL字符串，则加载JSON数据
+        if (typeof this.animationData === 'string') {
+          const response = await fetch(this.animationData)
+          if (!response.ok) {
+            throw new Error(`Failed to load animation: ${response.status}`)
+          }
+          animData = await response.json()
+        }
+        
+        // 创建Lottie动画
+        this.animation = lottie.loadAnimation({
+          container: this.$refs.lottieContainer,
+          renderer: this.renderer,
+          loop: this.loop,
+          autoplay: this.autoplay,
+          animationData: animData,
+          rendererSettings: {
+            preserveAspectRatio: 'xMidYMid meet',
+            clearCanvas: true,
+            progressiveLoad: true,
+            hideOnTransparent: true
+          }
+        })
+        
+        // 设置播放速度
+        this.animation.setSpeed(this.speed)
+        
+        // 监听动画事件
+        this.animation.addEventListener('complete', this.onAnimationComplete)
+        this.animation.addEventListener('loopComplete', this.onLoopComplete)
+        this.animation.addEventListener('enterFrame', this.onEnterFrame)
+        this.animation.addEventListener('segmentStart', this.onSegmentStart)
+        this.animation.addEventListener('data_ready', this.onDataReady)
+        this.animation.addEventListener('data_failed', this.onDataFailed)
+        
+        this.isLoaded = true
+        this.hasError = false
+        this.$emit('loaded', this.animation)
+        
+      } catch (error) {
+        console.warn('Lottie animation failed to load:', error)
+        this.hasError = true
+        this.showFallback()
+        this.$emit('error', error)
+      }
+    },
+    
+    destroyAnimation() {
+      if (this.animation) {
+        this.animation.removeEventListener('complete', this.onAnimationComplete)
+        this.animation.removeEventListener('loopComplete', this.onLoopComplete)
+        this.animation.removeEventListener('enterFrame', this.onEnterFrame)
+        this.animation.removeEventListener('segmentStart', this.onSegmentStart)
+        this.animation.removeEventListener('data_ready', this.onDataReady)
+        this.animation.removeEventListener('data_failed', this.onDataFailed)
+        
+        this.animation.destroy()
+        this.animation = null
+      }
+      this.isLoaded = false
+    },
+    
+    showFallback() {
+      if (this.fallbackIcon && this.$refs.lottieContainer) {
+        this.$refs.lottieContainer.innerHTML = `<i class="${this.fallbackIcon}"></i>`
+      }
+    },
+    
+    // 控制方法
+    play() {
+      if (this.animation) {
+        this.animation.play()
+      }
+    },
+    
+    pause() {
+      if (this.animation) {
+        this.animation.pause()
+      }
+    },
+    
+    stop() {
+      if (this.animation) {
+        this.animation.stop()
+      }
+    },
+    
+    goToAndStop(value, isFrame = false) {
+      if (this.animation) {
+        this.animation.goToAndStop(value, isFrame)
+      }
+    },
+    
+    goToAndPlay(value, isFrame = false) {
+      if (this.animation) {
+        this.animation.goToAndPlay(value, isFrame)
+      }
+    },
+    
+    setDirection(direction) {
+      if (this.animation) {
+        this.animation.setDirection(direction)
+      }
+    },
+    
+    playSegments(segments, forceFlag = false) {
+      if (this.animation) {
+        this.animation.playSegments(segments, forceFlag)
+      }
+    },
+    
+    // 事件处理
+    handleClick() {
+      if (this.clickable) {
+        this.$emit('click', this.animation)
+      }
+    },
+    
+    onAnimationComplete() {
+      this.$emit('complete', this.animation)
+    },
+    
+    onLoopComplete() {
+      this.$emit('loop-complete', this.animation)
+    },
+    
+    onEnterFrame(event) {
+      this.$emit('enter-frame', event)
+    },
+    
+    onSegmentStart() {
+      this.$emit('segment-start', this.animation)
+    },
+    
+    onDataReady() {
+      this.$emit('data-ready', this.animation)
+    },
+    
+    onDataFailed() {
+      this.hasError = true
+      this.showFallback()
+      this.$emit('data-failed', this.animation)
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.lottie-icon {
+  display: inline-block;
+  position: relative;
+  
+  // 确保SVG正确缩放
+  :deep(svg) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  // 降级图标样式
+  :deep(i) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: inherit;
+  }
+}
+
+// 减少动画模式支持
+@media (prefers-reduced-motion: reduce) {
+  .lottie-icon {
+    :deep(svg) {
+      animation-play-state: paused !important;
+    }
+  }
+}
+</style>

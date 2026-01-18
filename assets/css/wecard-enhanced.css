@@ -1,0 +1,312 @@
+/**
+ * WeCard 名片增强样式
+ * 现代化视觉升级
+ */
+
+/* 整体名片容器 */
+.wecard-optimized {
+  background: linear-gradient(
+    to bottom,
+    #f8f9ff 0%,
+    #ffffff 50%,
+    #f0f4ff 100%
+  );
+  min-height: 100vh;
+  position: relative;
+}
+
+.wecard-optimized::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wecard-optimized .card-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* 隐藏突兀的底部元素 */
+.wecard-optimized .save-contact-section.enhanced-save,
+.wecard-optimized .bottom-decoration {
+  display: none !important;
+}
+
+/* 新的融入式底部操作区 */
+.contact-actions-footer {
+  margin: 24px 20px 32px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.contact-action-btn {
+  padding: 16px 20px;
+  border-radius: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  font-family: inherit;
+}
+
+/* CardHeader按钮样式（应用到底部按钮） */
+.contact-action-btn.card-btn-style {
+  width: 100px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid #000000;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  color: #000000;
+  background: #ffffff;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.contact-action-btn.card-btn-style:hover {
+  background: #000000;
+  color: #ffffff;
+}
+
+.contact-action-btn.card-btn-style.card-btn-solid {
+  background: #000000;
+  color: #ffffff;
+}
+
+.contact-action-btn.card-btn-style.card-btn-solid:hover {
+  background: #ffffff;
+  color: #000000;
+}
+
+.contact-action-btn.card-btn-style:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.contact-action-btn.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.contact-action-btn.primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.contact-action-btn.primary:active {
+  transform: translateY(-1px);
+}
+
+.contact-action-btn.secondary {
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+}
+
+.contact-action-btn.secondary:hover {
+  background: rgba(102, 126, 234, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+}
+
+.contact-action-btn i {
+  font-size: 20px;
+}
+
+/* 简洁的页脚 */
+.card-footer-simple {
+  margin-top: 32px;
+  padding: 24px 20px;
+  text-align: center;
+  font-size: 12px;
+  color: #8c8c8c;
+  position: relative;
+}
+
+.card-footer-simple::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(102, 126, 234, 0.3) 50%,
+    transparent 100%
+  );
+  border-radius: 2px;
+}
+
+.card-footer-simple .powered-by {
+  margin-top: 12px;
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+/* 渐隐底部背景 */
+.card-footer-fade {
+  margin-top: 40px;
+  padding: 40px 20px 32px 20px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(248, 249, 255, 0.5) 30%,
+    rgba(240, 243, 255, 0.8) 70%,
+    rgba(240, 243, 255, 1) 100%
+  );
+  position: relative;
+}
+
+.card-footer-fade::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(102, 126, 234, 0.2) 50%,
+    transparent 100%
+  );
+}
+
+/* 浮动操作按钮（备选方案） */
+.floating-actions {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 100;
+}
+
+.action-fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 
+    0 6px 20px rgba(102, 126, 234, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+.action-fab:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 
+    0 12px 32px rgba(102, 126, 234, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.action-fab i {
+  font-size: 24px;
+}
+
+.fab-label {
+  position: absolute;
+  right: 64px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.action-fab:hover .fab-label {
+  opacity: 1;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .contact-actions-footer {
+    margin: 20px 16px 28px 16px;
+    gap: 10px;
+  }
+  
+  .contact-action-btn {
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+  
+  .contact-action-btn.card-btn-style {
+    width: 90px;
+    height: 32px;
+    font-size: 10px;
+  }
+  
+  .floating-actions {
+    bottom: 16px;
+    right: 16px;
+    gap: 10px;
+  }
+  
+  .action-fab {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .action-fab i {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-actions-footer {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-action-btn {
+    width: 100%;
+  }
+}
+
+/* 禁用状态 */
+.contact-action-btn:disabled,
+.action-fab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* 图标样式 */
+.icon-save::before { content: "💾"; }
+.icon-share::before { content: "📤"; }
+.icon-phone::before { content: "📞"; }
+.icon-wechat::before { content: "💬"; }
+

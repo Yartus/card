@@ -1,0 +1,447 @@
+/**
+ * WeCard 科幻主题系统
+ * 可配置的颜色方案和设计规范
+ */
+
+/* ===========================================
+   主题配色方案定义
+   =========================================== */
+
+/* 默认主题：青蓝科技 */
+:root,
+[data-theme="cyber"] {
+  /* 主色系 */
+  --primary-color: #00ffff;
+  --secondary-color: #0099cc;
+  --accent-color: #ff00ff;
+  
+  /* 背景色系 */
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #16213e;
+  --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  
+  /* 文字色系 */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --text-inverse: #000000;
+  
+  /* 功能色系 */
+  --border-color: rgba(0, 255, 255, 0.2);
+  --border-hover: rgba(0, 255, 255, 0.4);
+  --border-active: rgba(0, 255, 255, 0.6);
+  --glow-color: rgba(0, 255, 255, 0.3);
+  --glow-intense: rgba(0, 255, 255, 0.5);
+  
+  /* 状态色系 */
+  --success-color: #00ff41;
+  --warning-color: #ffaa00;
+  --error-color: #ff4757;
+  --info-color: #00ffff;
+  
+  /* 透明度变量 */
+  --glass-bg: rgba(255, 255, 255, 0.02);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --overlay-bg: rgba(0, 0, 0, 0.3);
+}
+
+/* 橙红能量主题 */
+[data-theme="energy"] {
+  --primary-color: #ff6b35;
+  --secondary-color: #cc5529;
+  --accent-color: #ffaa00;
+  
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #2e1a1a;
+  --bg-tertiary: #3e2116;
+  --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #2e1a1a 50%, #3e2116 100%);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  
+  --border-color: rgba(255, 107, 53, 0.2);
+  --border-hover: rgba(255, 107, 53, 0.4);
+  --border-active: rgba(255, 107, 53, 0.6);
+  --glow-color: rgba(255, 107, 53, 0.3);
+  --glow-intense: rgba(255, 107, 53, 0.5);
+}
+
+/* 紫色神秘主题 */
+[data-theme="mystic"] {
+  --primary-color: #8a2be2;
+  --secondary-color: #6a1b9a;
+  --accent-color: #e91e63;
+  
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #1a0a2e;
+  --bg-tertiary: #2e1a3e;
+  --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #2e1a3e 100%);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  
+  --border-color: rgba(138, 43, 226, 0.2);
+  --border-hover: rgba(138, 43, 226, 0.4);
+  --border-active: rgba(138, 43, 226, 0.6);
+  --glow-color: rgba(138, 43, 226, 0.3);
+  --glow-intense: rgba(138, 43, 226, 0.5);
+}
+
+/* 绿色矩阵主题 */
+[data-theme="matrix"] {
+  --primary-color: #00ff41;
+  --secondary-color: #00cc33;
+  --accent-color: #39ff14;
+  
+  --bg-primary: #0a0a0a;
+  --bg-secondary: #0a2e0a;
+  --bg-tertiary: #162e16;
+  --bg-gradient: linear-gradient(135deg, #0a0a0a 0%, #0a2e0a 50%, #162e16 100%);
+  
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  
+  --border-color: rgba(0, 255, 65, 0.2);
+  --border-hover: rgba(0, 255, 65, 0.4);
+  --border-active: rgba(0, 255, 65, 0.6);
+  --glow-color: rgba(0, 255, 65, 0.3);
+  --glow-intense: rgba(0, 255, 65, 0.5);
+}
+
+/* ===========================================
+   基础组件样式
+   =========================================== */
+
+/* 科幻卡片容器 */
+.cyber-card {
+  position: relative;
+  background: var(--bg-gradient);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  backdrop-filter: blur(15px);
+  box-shadow: 
+    0 8px 32px var(--glow-color),
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 var(--glass-border);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.cyber-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 
+    0 12px 48px var(--glow-intense),
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 科幻按钮 */
+.cyber-button {
+  position: relative;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  border: 2px solid var(--primary-color);
+  color: var(--text-primary);
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.cyber-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.cyber-button::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  border-radius: 12px;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.cyber-button:hover {
+  transform: translateY(-2px);
+  text-shadow: 0 0 8px currentColor;
+}
+
+.cyber-button:hover::before {
+  left: 100%;
+}
+
+.cyber-button:hover::after {
+  opacity: 0.6;
+}
+
+/* 科幻输入框 */
+.cyber-input {
+  background: var(--overlay-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 12px 16px;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.cyber-input:focus {
+  outline: none;
+  border-color: var(--border-active);
+  box-shadow: 0 0 15px var(--glow-color);
+}
+
+.cyber-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* 科幻标题 */
+.cyber-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 0 20px var(--glow-color);
+  margin: 0 0 16px 0;
+  position: relative;
+}
+
+.cyber-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), transparent);
+  border-radius: 1px;
+}
+
+/* 科幻副标题 */
+.cyber-subtitle {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+  margin: 0 0 12px 0;
+}
+
+/* 科幻文本 */
+.cyber-text {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.cyber-text-muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* ===========================================
+   动画系统
+   =========================================== */
+
+/* 网格背景动画 */
+.cyber-grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(var(--border-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: gridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.3;
+}
+
+@keyframes gridMove {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(20px, 20px); }
+}
+
+/* 光晕脉冲动画 */
+.cyber-glow-pulse {
+  animation: glowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.3; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1.1); }
+}
+
+/* 扫描线动画 */
+.cyber-scan-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+  animation: scanMove 3s linear infinite;
+}
+
+@keyframes scanMove {
+  0% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+/* 旋转光环动画 */
+.cyber-rotate {
+  animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 脉冲点动画 */
+.cyber-pulse-dot {
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+/* ===========================================
+   响应式设计
+   =========================================== */
+
+@media (max-width: 768px) {
+  .cyber-title {
+    font-size: 24px;
+  }
+  
+  .cyber-subtitle {
+    font-size: 14px;
+  }
+  
+  .cyber-card {
+    border-radius: 12px;
+    margin: 8px;
+  }
+  
+  .cyber-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cyber-title {
+    font-size: 20px;
+  }
+  
+  .cyber-card {
+    border-radius: 8px;
+    margin: 4px;
+  }
+  
+  .cyber-button {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
+/* ===========================================
+   工具类
+   =========================================== */
+
+/* 玻璃态效果 */
+.glass-effect {
+  backdrop-filter: blur(15px);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+/* 发光效果 */
+.glow-effect {
+  box-shadow: 0 0 20px var(--glow-color);
+}
+
+.glow-effect-intense {
+  box-shadow: 0 0 30px var(--glow-intense);
+}
+
+/* 边框发光 */
+.border-glow {
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 10px var(--glow-color);
+}
+
+.border-glow:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 0 20px var(--glow-intense);
+}
+
+/* 文字发光 */
+.text-glow {
+  text-shadow: 0 0 10px var(--glow-color);
+}
+
+.text-glow-intense {
+  text-shadow: 0 0 20px var(--glow-intense);
+}
+
+/* 悬停变换 */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* 渐变文字 */
+.gradient-text {
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

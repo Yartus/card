@@ -1,0 +1,116 @@
+[
+  {
+    "name": "admin",
+    "path": "/admin",
+    "component": "/opt/qwcard/pages/admin/index.vue",
+    "chunkName": "pages/admin/index",
+    "_name": "_7db8e91b"
+  },
+  {
+    "name": "card-preview",
+    "path": "/card-preview",
+    "component": "/opt/qwcard/pages/card-preview.vue",
+    "chunkName": "pages/card-preview",
+    "children": [
+      {
+        "name": "card-preview-tenantId-memberId",
+        "path": ":tenantId?/:memberId?",
+        "component": "/opt/qwcard/pages/card-preview/_tenantId/_memberId.vue",
+        "chunkName": "pages/card-preview/_tenantId/_memberId",
+        "_name": "_1812646c"
+      }
+    ],
+    "_name": "_2276005c"
+  },
+  {
+    "name": "login",
+    "path": "/login",
+    "component": "/opt/qwcard/pages/login.vue",
+    "chunkName": "pages/login",
+    "_name": "_796883b2"
+  },
+  {
+    "name": "privacy-policy",
+    "path": "/privacy-policy",
+    "component": "/opt/qwcard/pages/privacy-policy.vue",
+    "chunkName": "pages/privacy-policy",
+    "_name": "_fead49c4"
+  },
+  {
+    "name": "terms-of-service",
+    "path": "/terms-of-service",
+    "component": "/opt/qwcard/pages/terms-of-service.vue",
+    "chunkName": "pages/terms-of-service",
+    "_name": "_05719a0c"
+  },
+  {
+    "name": "admin-assets",
+    "path": "/admin/assets",
+    "component": "/opt/qwcard/pages/admin/assets.vue",
+    "chunkName": "pages/admin/assets",
+    "_name": "_e10e87ec"
+  },
+  {
+    "name": "admin-frameworks",
+    "path": "/admin/frameworks",
+    "component": "/opt/qwcard/pages/admin/frameworks.vue",
+    "chunkName": "pages/admin/frameworks",
+    "_name": "_fc36c388"
+  },
+  {
+    "name": "admin-test-center",
+    "path": "/admin/test-center",
+    "component": "/opt/qwcard/pages/admin/test-center.vue",
+    "chunkName": "pages/admin/test-center",
+    "_name": "_454afb0e"
+  },
+  {
+    "name": "wecom-card",
+    "path": "/wecom/card",
+    "component": "/opt/qwcard/pages/wecom/card.vue",
+    "chunkName": "pages/wecom/card",
+    "_name": "_ef842e9a"
+  },
+  {
+    "name": "wecom-install",
+    "path": "/wecom/install",
+    "component": "/opt/qwcard/pages/wecom/install.vue",
+    "chunkName": "pages/wecom/install",
+    "_name": "_0c0fefc8"
+  },
+  {
+    "name": "wecom-settings",
+    "path": "/wecom/settings",
+    "component": "/opt/qwcard/pages/wecom/settings.vue",
+    "chunkName": "pages/wecom/settings",
+    "_name": "_1f16eac6"
+  },
+  {
+    "name": "wecom-workspace",
+    "path": "/wecom/workspace",
+    "component": "/opt/qwcard/pages/wecom/workspace.vue",
+    "chunkName": "pages/wecom/workspace",
+    "_name": "_4f06b882"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/opt/qwcard/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_a07e3eca"
+  },
+  {
+    "name": "admin-tenant-id",
+    "path": "/admin/tenant/:id?",
+    "component": "/opt/qwcard/pages/admin/tenant/_id.vue",
+    "chunkName": "pages/admin/tenant/_id",
+    "_name": "_18d452dc"
+  },
+  {
+    "name": "assets-tenant_id",
+    "path": "/assets/:tenant_id?",
+    "component": "/opt/qwcard/pages/assets/_tenant_id.vue",
+    "chunkName": "pages/assets/_tenant_id",
+    "_name": "_3063a226"
+  }
+]

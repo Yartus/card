@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth授权测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin: 10px 0;
+        }
+        .log {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .log-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #1890ff;
+            padding-left: 10px;
+        }
+        .error {
+            border-left-color: #ff4d4f;
+            color: #ff4d4f;
+        }
+        .success {
+            border-left-color: #52c41a;
+            color: #52c41a;
+        }
+        .info {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔐 OAuth授权流程测试</h1>
+    
+    <div class="section">
+        <h2>当前状态</h2>
+        <div id="status" class="log"></div>
+    </div>
+    
+    <div class="section">
+        <h2>操作</h2>
+        <button class="btn" onclick="checkAuth()">1. 检查认证状态</button>
+        <button class="btn" onclick="testCardAPI()">2. 测试名片API</button>
+        <button class="btn" onclick="clearAndRetry()">3. 清除缓存并重试</button>
+    </div>
+    
+    <div class="section">
+        <h2>日志</h2>
+        <div id="log" class="log"></div>
+    </div>
+    
+    <div class="info">
+        <strong>说明：</strong>
+        <ul>
+            <li>如果看到"需要授权"，说明OAuth检测正常</li>
+            <li>点击授权URL会跳转到企微授权页面</li>
+            <li>授权成功后会自动返回并保存信息</li>
+        </ul>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const el = document.getElementById('log');
+            const logItem = document.createElement('div');
+            logItem.className = `log-item ${type}`;
+            logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            el.appendChild(logItem);
+            el.scrollTop = el.scrollHeight;
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const el = document.getElementById('status');
+            el.innerHTML = `<div class="log-item ${type}">${message}</div>`;
+        }
+        
+        async function checkAuth() {
+            log('检查认证状态...', 'info');
+            
+            const token = localStorage.getItem('wecom_token');
+            if (token) {
+                log(`✅ 找到token: ${token.substring(0, 30)}...`, 'success');
+                updateStatus('✅ 已认证', 'success');
+            } else {
+                log('❌ 未找到token', 'error');
+                updateStatus('❌ 未认证', 'error');
+            }
+            
+            // 检查URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('oauth_success')) {
+                log('✅ 检测到OAuth授权成功回调', 'success');
+                const newToken = urlParams.get('token');
+                if (newToken) {
+                    localStorage.setItem('wecom_token', newToken);
+                    log('✅ 新token已保存', 'success');
+                    // 清除URL参数
+                    window.history.replaceState({}, '', window.location.pathname);
+                }
+            }
+        }
+        
+        async function testCardAPI() {
+            log('测试名片API...', 'info');
+            
+            const token = localStorage.getItem('wecom_token');
+            if (!token) {
+                log('❌ 请先获取token', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/v1/wecom/card/my', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                log(`HTTP ${response.status}: ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                if (data.need_oauth) {
+                    log('🔐 需要OAuth授权！', 'success');
+                    log(`授权URL: ${data.oauth_url}`, 'info');
+                    updateStatus('🔐 需要OAuth授权', 'error');
+                    
+                    if (confirm('检测到需要OAuth授权，是否立即跳转？\n\n' + data.message)) {
+                        window.location.href = data.oauth_url;
+                    }
+                } else if (data.success) {
+                    log('✅ 获取名片成功！', 'success');
+                    log(`姓名: ${data.card_data?.basic_info?.name}`, 'info');
+                    log(`手机: ${data.card_data?.contact_info?.mobile || '无'}`, 'info');
+                    log(`职位: ${data.card_data?.basic_info?.title || '无'}`, 'info');
+                    updateStatus('✅ 名片信息完整', 'success');
+                } else {
+                    log(`❌ 错误: ${data.error || data.message}`, 'error');
+                    updateStatus(`❌ ${data.error || data.message}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ 请求失败: ${error.message}`, 'error');
+                updateStatus(`❌ 请求失败`, 'error');
+            }
+        }
+        
+        function clearAndRetry() {
+            log('清除本地缓存...', 'info');
+            localStorage.clear();
+            log('✅ 缓存已清除', 'success');
+            updateStatus('缓存已清除，请重新认证', 'info');
+        }
+        
+        // 页面加载时自动检查
+        window.onload = function() {
+            log('页面加载完成', 'info');
+            checkAuth();
+        };
+    </script>
+</body>
+</html>
+

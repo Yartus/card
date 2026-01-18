@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth调试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .btn {
+            background: #1890ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #40a9ff;
+        }
+        .log {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+        .log-item {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #1890ff;
+            padding-left: 10px;
+        }
+        .error {
+            border-left-color: #ff4d4f;
+            color: #ff4d4f;
+        }
+        .success {
+            border-left-color: #52c41a;
+            color: #52c41a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 OAuth授权调试工具</h1>
+    
+    <div class="section">
+        <h2>1. 环境检测</h2>
+        <button class="btn" onclick="checkEnvironment()">检测环境</button>
+        <div id="env-result" class="log"></div>
+    </div>
+    
+    <div class="section">
+        <h2>2. 测试API调用</h2>
+        <p>请先在企微中打开名片页面获取token，然后粘贴到下面：</p>
+        <input type="text" id="token-input" placeholder="粘贴token" style="width: 100%; padding: 10px; border: 1px solid #d9d9d9; border-radius: 4px;">
+        <br><br>
+        <button class="btn" onclick="testCardAPI()">测试 /api/v1/wecom/card/my</button>
+        <div id="api-result" class="log"></div>
+    </div>
+    
+    <div class="section">
+        <h2>3. 测试OAuth授权</h2>
+        <button class="btn" onclick="testOAuthFlow()">测试OAuth流程</button>
+        <div id="oauth-result" class="log"></div>
+    </div>
+    
+    <div class="section">
+        <h2>4. 数据库状态</h2>
+        <button class="btn" onclick="checkDatabaseStatus()">检查数据库</button>
+        <div id="db-result" class="log"></div>
+    </div>
+
+    <script>
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const logItem = document.createElement('div');
+            logItem.className = `log-item ${type}`;
+            logItem.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            el.appendChild(logItem);
+            el.scrollTop = el.scrollHeight;
+        }
+        
+        function clearLog(elementId) {
+            document.getElementById(elementId).innerHTML = '';
+        }
+        
+        function checkEnvironment() {
+            clearLog('env-result');
+            log('env-result', '开始环境检测...', 'info');
+            
+            // 检测User Agent
+            const ua = navigator.userAgent;
+            log('env-result', `User Agent: ${ua}`, 'info');
+            
+            // 检测是否在企微环境
+            const isWecom = /wxwork/i.test(ua);
+            log('env-result', `是否企微环境: ${isWecom ? '是 ✅' : '否 ❌'}`, isWecom ? 'success' : 'error');
+            
+            // 检测企微JSAPI
+            const hasWxAPI = typeof window.wx !== 'undefined';
+            log('env-result', `企微JSAPI: ${hasWxAPI ? '可用 ✅' : '不可用 ❌'}`, hasWxAPI ? 'success' : 'error');
+            
+            // 检测当前URL
+            log('env-result', `当前URL: ${window.location.href}`, 'info');
+            
+            // 检测localStorage
+            try {
+                localStorage.setItem('test', '1');
+                localStorage.removeItem('test');
+                log('env-result', 'localStorage: 可用 ✅', 'success');
+                
+                const token = localStorage.getItem('wecom_token');
+                log('env-result', `Token状态: ${token ? '已存在' : '未存在'}`, token ? 'success' : 'error');
+            } catch (e) {
+                log('env-result', `localStorage: 不可用 ❌ - ${e.message}`, 'error');
+            }
+        }
+        
+        async function testCardAPI() {
+            clearLog('api-result');
+            const token = document.getElementById('token-input').value.trim() || localStorage.getItem('wecom_token');
+            
+            if (!token) {
+                log('api-result', '❌ 请先输入token或在企微中打开名片页面', 'error');
+                return;
+            }
+            
+            log('api-result', '📡 调用 /api/v1/wecom/card/my...', 'info');
+            
+            try {
+                const response = await fetch('/api/v1/wecom/card/my', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                log('api-result', `HTTP状态: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                
+                const data = await response.json();
+                log('api-result', `响应数据: ${JSON.stringify(data, null, 2)}`, 'info');
+                
+                if (data.need_oauth) {
+                    log('api-result', '🔐 需要OAuth授权！', 'success');
+                    log('api-result', `授权URL: ${data.oauth_url}`, 'info');
+                    
+                    if (confirm('检测到需要OAuth授权，是否立即跳转？')) {
+                        window.location.href = data.oauth_url;
+                    }
+                } else if (data.success) {
+                    log('api-result', '✅ 获取名片成功！', 'success');
+                } else if (data.error) {
+                    log('api-result', `❌ 错误: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                log('api-result', `❌ 请求失败: ${error.message}`, 'error');
+            }
+        }
+        
+        async function testOAuthFlow() {
+            clearLog('oauth-result');
+            log('oauth-result', '测试OAuth授权流程...', 'info');
+            
+            // 检测URL中是否有OAuth回调参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const oauthSuccess = urlParams.get('oauth_success');
+            const tokenFromUrl = urlParams.get('token');
+            
+            if (code) {
+                log('oauth-result', `✅ 检测到OAuth code: ${code}`, 'success');
+                log('oauth-result', `State: ${state}`, 'info');
+            }
+            
+            if (oauthSuccess && tokenFromUrl) {
+                log('oauth-result', `✅ OAuth授权成功！Token: ${tokenFromUrl.substring(0, 20)}...`, 'success');
+                localStorage.setItem('wecom_token', tokenFromUrl);
+                document.getElementById('token-input').value = tokenFromUrl;
+            }
+            
+            if (!code && !oauthSuccess) {
+                log('oauth-result', 'ℹ️ 当前URL没有OAuth回调参数', 'info');
+                log('oauth-result', '请先调用"测试API"获取授权URL', 'info');
+            }
+        }
+        
+        async function checkDatabaseStatus() {
+            clearLog('db-result');
+            log('db-result', '⚠️ 此功能需要后端支持', 'info');
+            log('db-result', '请联系管理员检查数据库members表', 'info');
+        }
+        
+        // 页面加载时自动检测环境
+        window.onload = function() {
+            checkEnvironment();
+            testOAuthFlow();
+        };
+    </script>
+</body>
+</html>
+

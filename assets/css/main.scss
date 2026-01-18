@@ -1,0 +1,32 @@
+/**
+ * 主样式文件
+ * 导入所有样式模块
+ */
+
+// 导入 Tailwind CSS
+@import './tailwind.css';
+
+// 导入主题系统
+@import './cyber-theme-system.css';
+
+// 全局样式
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+}

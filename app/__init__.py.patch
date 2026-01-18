@@ -1,0 +1,8 @@
+# 在 app/__init__.py 中注册素材库API路由
+
+# 在现有导入中添加:
+# from .routes import assets
+
+# 在 register_blueprints() 函数中添加:
+# app.register_blueprint(assets.bp)
+
